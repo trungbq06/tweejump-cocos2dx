@@ -189,13 +189,6 @@ void MainScene::resetCloud(void)
 void MainScene::step(ccTime dt)
 {
 	// CCLog("Main::step");
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_AIRPLAY)
-	// For smartphone release and Airplay SDK, keep the backlight on during use
-	if (!s3eDeviceCheckPauseRequest())
-	{
-		 s3eDeviceBacklightOn();
-	}
-#endif
 
 	int t = kCloudsStartTag;
 	for(t; t < kCloudsStartTag + kNumClouds; t++) 
