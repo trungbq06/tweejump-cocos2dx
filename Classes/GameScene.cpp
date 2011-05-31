@@ -1,7 +1,8 @@
 #include "GameScene.h"
 #include "MainScene.h"
-// ##include "Highscores.h"
+// #include "Highscores.h"
 
+//  Bonus prize Images
 const char * bonus_image[]=
 {
 	"5.png",
@@ -10,6 +11,7 @@ const char * bonus_image[]=
 	"100.png"
 };
 
+// Initialize the GameScene
 bool GameScene::init()
 {
 	CCLog("GameScene::init");
@@ -21,15 +23,23 @@ bool GameScene::init()
         //////////////////////////////////////////////////////////////////////////
         CC_BREAK_IF(! CCLayer::init());
 
+		// Initialize the parent
+		MainScene::init();
+
+		// Start off as game suspended
 		gameSuspended = true;
 
+		// Get the bird sprite
 		CCSprite *bird = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("bird.png"));
 		this->addChild(bird, 4, kBird);
+
+		// Initialize the platforms
 		initPlatforms();
 
+		// Create the bonus sprite
 		CCSprite *bonus;
 
-		// Load in the bonus images
+		// Load in the bonus images, 5, 10, 50, 100
 		for(int i=0; i<kNumBonuses; i++) 
 		{
 			bonus = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(bonus_image[i]));
@@ -40,14 +50,19 @@ bool GameScene::init()
 		// Create the Score Label
 		CCLabelBMFont* scoreLabel = CCLabelBMFont::bitmapFontAtlasWithString("0",  "Images/bitmapFont.fnt");
 		this->addChild(scoreLabel, 5, kScoreLabel);
+
 		// Center the label
 		scoreLabel->setPosition(ccp(CCDirector::sharedDirector()->getWinSize().width/2,CCDirector::sharedDirector()->getWinSize().height - 50));
 
+		// Start the GameScene stepping
 		schedule(schedule_selector(GameScene::step));
 
+		// Enable the touch events
 		setIsTouchEnabled(true);
+		// Enable accelerometer events
 		setIsAccelerometerEnabled(true);
 
+		// Start the game
 		startGame();
 
         bRet = true;
@@ -57,6 +72,7 @@ bool GameScene::init()
 }
 
 
+// Initialize the platforms that the bird jumps on
 void GameScene::initPlatforms(void)
 {
 	CCLog("initPlatforms");
@@ -71,6 +87,7 @@ void GameScene::initPlatforms(void)
 	resetPlatforms();
 }
 
+// Supports Two types of platforms although only one exists in the art.
 void GameScene::initPlatform(void)
 {
 	CCSprite *platform;
@@ -89,15 +106,14 @@ void GameScene::initPlatform(void)
 	}
 }
 
-
+// Initializes everything and then starts the game by setting the gameSuspend
 void GameScene::startGame(void)
 {
 	CCLog("startGame");
 
 	score = 0;
 	
-	// This does not work, causes crash
-	//resetClouds();
+	resetClouds();
 	resetPlatforms();
 	resetBird();
 	resetBonus();
@@ -105,6 +121,7 @@ void GameScene::startGame(void)
 	gameSuspended = false;
 }
 
+// Reset the platforms as they move off the screen
 void GameScene::resetPlatforms(void)
 {
 	CCLog("resetPlatforms");
@@ -141,7 +158,7 @@ void GameScene::resetPlatform(void)
 	
 	CCSprite *platform = (CCSprite*)getChildByTag(currentPlatformTag);
 
-	if(rand()%2==1) platform->setScaleX(-1.0f);
+	if(rand() % 2 == 1) platform->setScaleX(-1.0f);
 
 	float x;
 	CCSize size = platform->getContentSize();
@@ -167,6 +184,7 @@ void GameScene::resetPlatform(void)
 	}
 }
 
+// Reset the bird to its home location
 void GameScene::resetBird(void)
 {
 	CCLog("resetBird");
@@ -187,6 +205,7 @@ void GameScene::resetBird(void)
 	bird->setScaleX(1.0f);
 }
 
+// Reset the bonus types based on the current score
 void GameScene::resetBonus(void)
 {
 	CCLog("resetBonus");
@@ -221,6 +240,7 @@ void GameScene::step(ccTime dt)
 	// Return if game suspended
 	if(gameSuspended) return;
 
+	// Get the bird sprite
 	CCSprite *bird = (CCSprite*)getChildByTag(kBird);
 	
 	// Update the player x position based on velocity and delta time
@@ -257,7 +277,7 @@ void GameScene::step(ccTime dt)
 	// Handle the bonus scoring
 	CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
 
-	// If bonus is visible then see if bird is within range to get the bonus
+	// If bonus is visible then see if the bird is within range to get the bonus
 	if(bonus->getIsVisible()) 
 	{
 		CCPoint bonus_pos = bonus->getPosition();
@@ -269,6 +289,7 @@ void GameScene::step(ccTime dt)
 		   bird_pos.y > bonus_pos.y - range &&
 		   bird_pos.y < bonus_pos.y + range ) 
 		{
+			// Update score based on bonus
 			switch(currentBonusType) 
 			{
 				case kBonus5:   score += 5000;   break;
@@ -277,6 +298,7 @@ void GameScene::step(ccTime dt)
 				case kBonus100: score += 100000; break;
 			}
 
+			// Build the score string to display
 			char scoreStr[10] = {0};
 			sprintf(scoreStr, "%d", score);
 			CCLabelBMFont* scoreLabel = (CCLabelBMFont*) getChildByTag(kScoreLabel);
@@ -291,7 +313,7 @@ void GameScene::step(ccTime dt)
 		}
 	}
 
-	
+	// If the bird has stopped moving then make it jump from the platform it is on
 	int t;
 	if(bird_vel.y < 0) 
 	{
@@ -316,51 +338,57 @@ void GameScene::step(ccTime dt)
 			}
 		}
 	
-		// If the player has fallen below the screen then game over
+		// If the bird has fallen below the screen then game over
 		if(bird_pos.y < - bird_size.height/2) 
 		{
-			// [self showHighscores];
-			resetBird();	// styck just keep him going
+			// [self showHighscores];   <== NEED TO IMPLEMENT THE HIGHTSCORE
+			resetBird();	// Highscore not implmented yet so just keep on going.
 		}
 		
 	} 
-	else if(bird_pos.y > ((float)CCDirector::sharedDirector()->getWinSize().height / 2))	// Bird is going off top of screen (240)
+	else if(bird_pos.y > ((float)CCDirector::sharedDirector()->getWinSize().height / 2))	// Bird is going off top of screen 
 	{
 		float delta = bird_pos.y - ((float)CCDirector::sharedDirector()->getWinSize().height / 2);
 		bird_pos.y = (float)CCDirector::sharedDirector()->getWinSize().height / 2;
 
 		currentPlatformY -= delta;
 
-#if 0		// NOT WORKING YET 
-
+		// Move the clouds vertically and reset if necessary
 		t = kCloudsStartTag;
 		for(t; t < kCloudsStartTag + kNumClouds; t++) 
 		{
 			CCSprite *cloud = (CCSprite*) getChildByTag(t);
 
 			CCPoint pos = cloud->getPosition();
+
+			// Calculate new position for cloud
 			pos.y -= delta * cloud->getScaleY() * 0.8f;
 
-			// If cloud is off the screen then need to rest this cloud
+			// If the cloud is off the screen then need to reset this cloud else set its new position
 			if(pos.y < -cloud->getContentSize().height/2) 
 			{
 				currentCloudTag = t;
-				// resetCloud();
+				resetCloud();
 			} 
 			else 
 			{	// Update the new y position for the cloud.
 				cloud->setPosition(pos);
 			}
 		}
-#endif		
 
+
+		// Move the platforms vertically and reset if necessary
 		t = kPlatformsStartTag;
 		for(t; t < kPlatformsStartTag + kNumPlatforms; t++) 
 		{
 			CCSprite *platform = (CCSprite*)getChildByTag(t);
 			
 			CCPoint pos = platform->getPosition();
-			pos = ccp(pos.x,pos.y-delta);
+
+			// Calculate new position for platform
+			pos = ccp(pos.x, pos.y - delta);
+
+			// If the platform is off the screen then reset the platform else set its new position
 			if(pos.y < - platform->getContentSize().height/2) 
 			{
 				currentPlatformTag = t;
@@ -376,8 +404,11 @@ void GameScene::step(ccTime dt)
 		if(bonus->getIsVisible()) 
 		{
 			CCPoint pos = bonus->getPosition();
+
+			// Calculate new position of bonus
 			pos.y -= delta;
 			
+			// If the bonus is off the screen then reset the bonus else set its new position
 			if(pos.y < -bonus->getContentSize().height/2 ) 
 			{
 				resetBonus();
@@ -388,14 +419,17 @@ void GameScene::step(ccTime dt)
 			}
 		}
 		
+		// Update score based on how much the bird has moved
 		score += (int)delta;
 
+		// Display the new score value
 		char scoreStr[10] = {0};
 		sprintf(scoreStr, "%d", score);
 		CCLabelBMFont* scoreLabel = (CCLabelBMFont*) getChildByTag(kScoreLabel);
 		scoreLabel->setString(scoreStr);
 	}
 
+	// Set the birds position
 	bird->setPosition(bird_pos);
 }
 
