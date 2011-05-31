@@ -149,6 +149,11 @@ void MainScene::resetClouds(void)
 	while(currentCloudTag < kCloudsStartTag + kNumClouds) 
 	{
 		resetCloud();
+
+		CCSprite *cloud = (CCSprite*)getChildByTag(currentCloudTag);
+		CCPoint pos = cloud->getPosition();
+		pos.y -= (float)CCDirector::sharedDirector()->getWinSize().height;
+		cloud->setPosition(pos);
 		currentCloudTag++;
 	}
 }
@@ -179,7 +184,7 @@ void MainScene::resetCloud(void)
 	// Randomly place each cloud within our view 
 	float x = rand() % (int)(CCDirector::sharedDirector()->getWinSize().width +  (int)scaled_width) - scaled_width/2;
 	float y = rand() % (int)(CCDirector::sharedDirector()->getWinSize().height - (int)scaled_width) + scaled_width/2 + CCDirector::sharedDirector()->getWinSize().height;
-	y -= CCDirector::sharedDirector()->getWinSize().height;
+
 	cloud->setPosition(ccp(x,y));
 }
 
