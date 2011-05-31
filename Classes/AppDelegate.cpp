@@ -80,14 +80,9 @@ bool AppDelegate::applicationDidFinishLaunching()
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / kFPS);
 
-	// CCScene *scene = [CCScene node];
-	// [scene addChild: [Game node]];
-	// [[CCDirector sharedDirector] runWithScene: scene];
+	CCScene *pScene = CCScene::node();
+	pScene->addChild(GameScene::node());
 
-	//CCScene *pScene = CCScene::node();
-	//pScene->addChild(MainScene::node());
-
-	CCScene *pScene = MainScene::scene();
 	pDirector->runWithScene(pScene);
 
     return true;
