@@ -199,10 +199,23 @@
                 <key>sourceSize</key>
                 <string>{102,39}</string>
             </dict>
+            <key>platform2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{381,598},{89,32}}</string>
+                <key>offset</key>
+                <string>{-2,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{89,32}}</string>
+                <key>sourceSize</key>
+                <string>{93,34}</string>
+            </dict>
             <key>playAgainButton.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{381,598},{233,47}}</string>
+                <string>{{470,598},{233,47}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
