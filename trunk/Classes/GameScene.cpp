@@ -100,7 +100,7 @@ void GameScene::initPlatform(void)
 
 			break;
 		case 1: 
-			platform = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform1.png"));
+			platform = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform2.png"));
 			this->addChild(platform, 3, currentPlatformTag);
 			break;
 	}
