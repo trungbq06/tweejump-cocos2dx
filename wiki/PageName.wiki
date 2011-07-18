@@ -1,0 +1,10 @@
+#summary Conversion of a cocos2d / Objective-C to cocos2d-x / C++
+
+= Introduction =
+
+This project will is useful for learning cocos2d-x since most tutorials available for cocos2d are written in Objective-C for the iPhone.
+
+
+= Details =
+
+Additional information can be found at http://www.neonchalk.com/wordpress
