@@ -13,9 +13,12 @@ using namespace cocos2d;
 
 #define kNumClouds			12
 
+// Fist platform is 30 pixels from the bottom of the screen
+#define kStartingCurrentPlatformY	30
+
 #define kMinPlatformStep	50
-#define kMaxPlatformStep	300
-#define kNumPlatforms		10
+#define kMaxPlatformStep	300		// This is the top of the screen (SHOULD BE RESOLUTION INDEPENDANT)
+#define kNumPlatforms		10		// Number of platforms
 #define kPlatformTopPadding 10
 
 #define kMinBonusStep		20
