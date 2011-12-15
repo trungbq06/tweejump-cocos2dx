@@ -23,7 +23,7 @@ bool GameScene::init()
         //////////////////////////////////////////////////////////////////////////
         CC_BREAK_IF(! CCLayer::init());
 
-		// Initialize the parent
+		// Initialize the parent - gets the sprite sheet loaded, sets the background and inits the clouds
 		MainScene::init();
 
 		// Start off as game suspended
@@ -48,7 +48,7 @@ bool GameScene::init()
 		}
 
 		// Create the Score Label
-		CCLabelBMFont* scoreLabel = CCLabelBMFont::bitmapFontAtlasWithString("0",  "Images/bitmapFont.fnt");
+		CCLabelBMFont* scoreLabel = CCLabelBMFont::labelWithString("0",  "Images/bitmapFont.fnt");
 		this->addChild(scoreLabel, 5, kScoreLabel);
 
 		// Center the label
@@ -126,9 +126,9 @@ void GameScene::resetPlatforms(void)
 {
 	CCLog("resetPlatforms");
 	
-	currentPlatformY = -1;
-	currentPlatformTag = kPlatformsStartTag;
-	currentMaxPlatformStep = 60.0f;
+	currentPlatformY = -1;						// Set the current platform y to -1 so it gets initialized
+	currentPlatformTag = kPlatformsStartTag;	// set starting platform
+	currentMaxPlatformStep = 60.0f;				// maximum space between platforms
 	currentBonusPlatformIndex = 0;
 	currentBonusType = 0;
 	platformCount = 0;
@@ -143,13 +143,17 @@ void GameScene::resetPlatforms(void)
 
 void GameScene::resetPlatform(void)
 {	
+	// We set this to -1 to initialize the first platform y coordinate
 	if(currentPlatformY < 0) 
 	{
-		currentPlatformY = 30.0f;
+		currentPlatformY = (float) kStartingCurrentPlatformY;
 	} 
 	else 
-	{
+	{	
+		// If not the first one then randomly determine a y coordinate for the platform
 		currentPlatformY += rand() % (int)(currentMaxPlatformStep - kMinPlatformStep) + kMinPlatformStep;
+
+		// If the current platofmr step is less than the max (top of screen) then increment it
 		if(currentMaxPlatformStep < kMaxPlatformStep) 
 		{
 			currentMaxPlatformStep += 0.5f;
@@ -158,12 +162,13 @@ void GameScene::resetPlatform(void)
 	
 	CCSprite *platform = (CCSprite*)getChildByTag(currentPlatformTag);
 
-	if(rand() % 2 == 1) platform->setScaleX(-1.0f);
+	if ( rand() % 2 == 1) platform->setScaleX(-1.0f);
 
 	float x;
 	CCSize size = platform->getContentSize();
 
-	if(currentPlatformY == 30.0f) 
+	// If the current platform is the first one initialized then just center it
+	if (currentPlatformY == (float)kStartingCurrentPlatformY) 
 	{
 		x = (float) CCDirector::sharedDirector()->getWinSize().width/2;
 	} 
@@ -175,7 +180,8 @@ void GameScene::resetPlatform(void)
 	platform->setPosition(ccp(x,currentPlatformY));
 	platformCount++;
 
-	if(platformCount == currentBonusPlatformIndex) 
+	// If the platform is to have to bonus then put it there.
+	if ( platformCount == currentBonusPlatformIndex) 
 	{
 		CCLog("platformCount = %d",platformCount);
 		CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
@@ -191,6 +197,7 @@ void GameScene::resetBird(void)
 
 	CCSprite *bird = (CCSprite*)getChildByTag(kBird);
 
+	// Place bird in center
 	bird_pos.x = (float) CCDirector::sharedDirector()->getWinSize().width/2;
 	bird_pos.y = (float) CCDirector::sharedDirector()->getWinSize().width/2;
 	bird->setPosition(bird_pos);
@@ -199,7 +206,7 @@ void GameScene::resetBird(void)
 	bird_vel.y = 0;
 	
 	bird_acc.x = 0;
-	bird_acc.y = -550.0f;
+	bird_acc.y = -550.0f;	// -250.0f makes the bird jump higher, -950.0f makes the bird jump lower
 	
 	birdLookingRight = true;
 	bird->setScaleX(1.0f);
@@ -212,8 +219,12 @@ void GameScene::resetBonus(void)
 	
 	CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
 
+	// Set the bonus to not be visible
 	bonus->setIsVisible(false);
-	currentBonusPlatformIndex += rand() % (kMaxBonusStep - kMinBonusStep) + kMinBonusStep;
+
+	// Randomly determine which platform will get the bonus next by adding a random amount
+	currentBonusPlatformIndex += rand() % ( kMaxBonusStep - kMinBonusStep ) + kMinBonusStep;
+
 	if(score < 10000) 
 	{
 		currentBonusType = 0;
@@ -221,7 +232,8 @@ void GameScene::resetBonus(void)
 	else if(score < 20000) 
 	{
 		currentBonusType = rand() % 2;
-	} else if(score < 10000) 
+	} 
+	else if ( score < 10000 ) 
 	{
 		currentBonusType = rand() % 3;
 	} else 
@@ -251,26 +263,27 @@ void GameScene::step(ccTime dt)
 	{
 		birdLookingRight = false;
 		bird->setScaleX(-1.0f);
-	} else if (bird_vel.x > 30.0f && !birdLookingRight) 
+	}
+	else if (bird_vel.x > 30.0f && !birdLookingRight) 
 	{
 		birdLookingRight = true;
 		bird->setScaleX(1.0f);
 	}
 
-	// Calculate the max and min x values for the player
-	// based on the screen and player widths
+	// Calculate the max and min x values for the bird
+	// based on the screen and bird widths
 	CCSize bird_size = bird->getContentSize();
 	float max_x = (float)CCDirector::sharedDirector()->getWinSize().width - bird_size.width/2;
 	float min_x = bird_size.width/2;
 	
-	// Limit the player position based on max and min values allowed
+	// Limit the bird position based on max and min values allowed
 	if(bird_pos.x>max_x) bird_pos.x = max_x;
 	if(bird_pos.x<min_x) bird_pos.x = min_x;
 
-	// Update the player velocity based on acceleration and time
+	// Update the bird velocity based on acceleration and time
 	bird_vel.y += bird_acc.y * dt;
 
-	// Update the player y positin based on velocity and time
+	// Update the bird y positin based on velocity and time
 	bird_pos.y += bird_vel.y * dt;
 	
 	////////////////////////////////////////////////////////////////////////////
@@ -309,6 +322,7 @@ void GameScene::step(ccTime dt)
 			CCActionInterval* a2 = CCScaleTo::actionWithDuration(0.2f, 1.0f, 1.0f);
 			scoreLabel->runAction(CCSequence::actions(a1, a2, a1, a2, a1, a2, NULL));
 
+			// Reset the bonus to another platform
 			resetBonus();
 		}
 	}
@@ -318,6 +332,8 @@ void GameScene::step(ccTime dt)
 	if(bird_vel.y < 0) 
 	{
 		t = kPlatformsStartTag;
+
+		// Search through all the platforms and compare the birds position with the platfor position
 		for(t; t < kPlatformsStartTag + kNumPlatforms; t++) 
 		{
 			CCSprite *platform = (CCSprite*)getChildByTag(t);
@@ -333,8 +349,10 @@ void GameScene::step(ccTime dt)
 			if(bird_pos.x > max_x &&
 			   bird_pos.x < min_x &&
 			   bird_pos.y > platform_pos.y &&
-			   bird_pos.y < min_y) {
+			   bird_pos.y < min_y) 
+			{
 				jump();
+				break;	// Can only jump from one platform at a time to break out of the loop
 			}
 		}
 	
@@ -344,18 +362,22 @@ void GameScene::step(ccTime dt)
 			// [self showHighscores];   <== NEED TO IMPLEMENT THE HIGHTSCORE
 			resetBird();	// Highscore not implmented yet so just keep on going.
 		}
-		
 	} 
-	else if(bird_pos.y > ((float)CCDirector::sharedDirector()->getWinSize().height / 2))	// Bird is going off top of screen 
+	else if ( bird_pos.y > ((float)CCDirector::sharedDirector()->getWinSize().height / 2)) 
 	{
+		// If bird position is greater than the middle of the screen then move the platforms
+		// the difference between the bird y position and middle point of the screen
 		float delta = bird_pos.y - ((float)CCDirector::sharedDirector()->getWinSize().height / 2);
+
+		// Set the bird y position to the middle of the screen
 		bird_pos.y = (float)CCDirector::sharedDirector()->getWinSize().height / 2;
 
+		// Move the current platform y by the delta amount
 		currentPlatformY -= delta;
 
 		// Move the clouds vertically and reset if necessary
 		t = kCloudsStartTag;
-		for(t; t < kCloudsStartTag + kNumClouds; t++) 
+		for (t; t < kCloudsStartTag + kNumClouds; t++) 
 		{
 			CCSprite *cloud = (CCSprite*) getChildByTag(t);
 
@@ -365,7 +387,7 @@ void GameScene::step(ccTime dt)
 			pos.y -= delta * cloud->getScaleY() * 0.8f;
 
 			// If the cloud is off the screen then need to reset this cloud else set its new position
-			if(pos.y < -cloud->getContentSize().height/2) 
+			if (pos.y < -cloud->getContentSize().height/2) 
 			{
 				currentCloudTag = t;
 				resetCloud();
@@ -376,10 +398,9 @@ void GameScene::step(ccTime dt)
 			}
 		}
 
-
 		// Move the platforms vertically and reset if necessary
 		t = kPlatformsStartTag;
-		for(t; t < kPlatformsStartTag + kNumPlatforms; t++) 
+		for (t; t < kPlatformsStartTag + kNumPlatforms; t++) 
 		{
 			CCSprite *platform = (CCSprite*)getChildByTag(t);
 			
