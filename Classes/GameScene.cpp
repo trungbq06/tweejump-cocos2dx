@@ -478,7 +478,7 @@ bool GameScene::ccTouchBegan(CCTouch* touch, CCEvent* event)
 // Touch on right side of screen moves player right
 void GameScene::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
-	CCPoint touchLocation = touch->locationInView( touch->view() );	
+	CCPoint touchLocation = touch->locationInView(  );	
 	touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
 	touchLocation =  convertToNodeSpace(touchLocation);
 
