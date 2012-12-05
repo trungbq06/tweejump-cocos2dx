@@ -1,10 +1,11 @@
-#ifndef __APP_DELEGATE_H__
-#define __APP_DELEGATE_H__
+#ifndef  _APP_DELEGATE_H_
+#define  _APP_DELEGATE_H_
 
 #include "CCApplication.h"
 
+
 /**
-@brief	The cocos2d Application.
+@brief    The cocos2d Application.
 
 The reason for implement as private inheritance is to hide some interface call by CCDirector.
 */
@@ -15,12 +16,7 @@ public:
     virtual ~AppDelegate();
 
     /**
-    @brief	Implement for initialize OpenGL instance, set source path, etc...
-    */
-    virtual bool initInstance();
-
-    /**
-    @brief	Implement CCDirector and CCScene init code here.
+    @brief    Implement CCDirector and CCScene init code here.
     @return true    Initialize success, app continue.
     @return false   Initialize failed, app terminate.
     */
@@ -39,5 +35,5 @@ public:
     virtual void applicationWillEnterForeground();
 };
 
-#endif  // __APP_DELEGATE_H__
+#endif // _APP_DELEGATE_H_
 

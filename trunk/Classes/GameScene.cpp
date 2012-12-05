@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "MainScene.h"
+
 // #include "Highscores.h"
 
 //  Bonus prize Images
@@ -30,7 +31,7 @@ bool GameScene::init()
 		gameSuspended = true;
 
 		// Get the bird sprite
-		CCSprite *bird = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("bird.png"));
+		CCSprite *bird = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("bird.png"));
 		this->addChild(bird, 4, kBird);
 
 		// Initialize the platforms
@@ -42,9 +43,9 @@ bool GameScene::init()
 		// Load in the bonus images, 5, 10, 50, 100
 		for(int i=0; i<kNumBonuses; i++) 
 		{
-			bonus = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(bonus_image[i]));
+			bonus = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(bonus_image[i]));
 			this->addChild(bonus,4, kBonusStartTag+i);
-			bonus->setIsVisible(false);
+			bonus->setVisible(false);
 		}
 
 		// Create the Score Label
@@ -58,9 +59,9 @@ bool GameScene::init()
 		schedule(schedule_selector(GameScene::step));
 
 		// Enable the touch events
-		setIsTouchEnabled(true);
+		setTouchEnabled(true);
 		// Enable accelerometer events
-		setIsAccelerometerEnabled(true);
+		setAccelerometerEnabled(true);
 
 		// Start the game
 		startGame();
@@ -95,12 +96,12 @@ void GameScene::initPlatform(void)
 	switch(rand()%2) 
 	{
 		case 0: 
-			platform = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform1.png"));
+			platform = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform1.png"));
 			this->addChild(platform, 3, currentPlatformTag);
 
 			break;
 		case 1: 
-			platform = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform2.png"));
+			platform = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("platform2.png"));
 			this->addChild(platform, 3, currentPlatformTag);
 			break;
 	}
@@ -186,7 +187,7 @@ void GameScene::resetPlatform(void)
 		CCLog("platformCount = %d",platformCount);
 		CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
 		bonus->setPosition(ccp(x, currentPlatformY+30));
-		bonus->setIsVisible(true);
+		bonus->setVisible(true);
 	}
 }
 
@@ -220,7 +221,7 @@ void GameScene::resetBonus(void)
 	CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
 
 	// Set the bonus to not be visible
-	bonus->setIsVisible(false);
+	bonus->setVisible(false);
 
 	// Randomly determine which platform will get the bonus next by adding a random amount
 	currentBonusPlatformIndex += rand() % ( kMaxBonusStep - kMinBonusStep ) + kMinBonusStep;
@@ -245,7 +246,7 @@ void GameScene::resetBonus(void)
 /////////////////////////////////////////////////////////
 // Main game loop
 
-void GameScene::step(ccTime dt)
+void GameScene::step(float dt)
 {
 //	CCLog("Game::step");
 
@@ -291,7 +292,7 @@ void GameScene::step(ccTime dt)
 	CCSprite *bonus = (CCSprite*)getChildByTag(kBonusStartTag+currentBonusType);
 
 	// If bonus is visible then see if the bird is within range to get the bonus
-	if(bonus->getIsVisible()) 
+	if(bonus->isVisible() )
 	{
 		CCPoint bonus_pos = bonus->getPosition();
 		float range = 20.0f;
@@ -422,7 +423,7 @@ void GameScene::step(ccTime dt)
 		}
 
 		// If the bonus is visible then adjust it's y position
-		if(bonus->getIsVisible()) 
+		if(bonus->isVisible()) 
 		{
 			CCPoint pos = bonus->getPosition();
 
@@ -465,7 +466,9 @@ void GameScene::jump(void)
 
 void GameScene::registerWithTouchDispatcher(void)
 {
-    CCTouchDispatcher::sharedDispatcher()->addTargetedDelegate(this, kCCMenuTouchPriority + 1, true);
+    CCDirector* pDirector = CCDirector::sharedDirector();
+    pDirector->getTouchDispatcher()->addTargetedDelegate(this, kCCMenuHandlerPriority + 1, true);
+
 }
 
 bool GameScene::ccTouchBegan(CCTouch* touch, CCEvent* event)

@@ -12,7 +12,7 @@ public:
     static cocos2d::CCScene* scene();
 
     // implement the "static node()" method manually
-    LAYER_NODE_FUNC(GameScene);
+    CREATE_FUNC(GameScene);
 
 	virtual void registerWithTouchDispatcher(void);
 	virtual void ccTouchEnded(CCTouch* touch, CCEvent* event);
@@ -41,7 +41,7 @@ public:
 	void	resetPlatform(void);
 	void	resetBird(void);
 	void	resetBonus(void);
-	void	step(ccTime dt);
+	void	step(float dt);
 	void	jump(void);
 	void	showHighscores(void);
 
