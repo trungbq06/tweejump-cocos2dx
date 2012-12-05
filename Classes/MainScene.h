@@ -53,7 +53,7 @@ public:
     static cocos2d::CCScene* scene();
     
     // implement the "static node()" method manually
-    LAYER_NODE_FUNC(MainScene);
+    CREATE_FUNC(MainScene);
 
 	cocos2d::CCSpriteBatchNode* spriteSheet ;
 
@@ -64,7 +64,7 @@ public:
 	void initCloud(void);
 	void resetClouds(void);
 	void resetCloud(void);
-	void step(ccTime dt);
+	void step(float dt);
 
 protected:
 	CCSprite * background;

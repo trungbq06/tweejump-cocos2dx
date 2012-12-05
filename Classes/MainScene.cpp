@@ -13,12 +13,12 @@ CCScene* MainScene::scene()
         CC_BREAK_IF(! scene);
 
         // Create and Add the MainScene Layer
-        MainScene *layer = MainScene::node();
+        MainScene *layer = MainScene::create();
         CC_BREAK_IF(! layer);
         scene->addChild(layer);
 
         // Create and Add the GameScene Layer
-		GameScene *layer1 = GameScene::node();
+		GameScene *layer1 = GameScene::create();
         CC_BREAK_IF(! layer1);
 		scene->addChild(layer1);
 
@@ -61,7 +61,7 @@ bool MainScene::init()
         // Add a menu item with "X" image, which is clicked to quit the program.
 
         // Create a "close" menu item with close icon, it's an auto release object.
-        CCMenuItemImage *pCloseItem = CCMenuItemImage::itemFromNormalImage(
+        CCMenuItemImage *pCloseItem = CCMenuItemImage::create(
             "CloseNormal.png",
             "CloseSelected.png",
             this,
@@ -191,7 +191,7 @@ void MainScene::resetCloud(void)
 /////////////////////////////////////////////////////////
 // For each cloud, move them in the x direction
 // with a speed based on their size
-void MainScene::step(ccTime dt)
+void MainScene::step(float dt)
 {
 	// CCLog("Main::step");
 
