@@ -224,6 +224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Classes\AppMacros.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Classes\GameScene.h"
 				>
 			</File>
