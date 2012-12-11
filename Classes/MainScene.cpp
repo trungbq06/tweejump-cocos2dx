@@ -9,11 +9,11 @@ CCScene* MainScene::scene()
     do 
     {
         // Create our Scene
-        scene = CCScene::node();
+        scene = CCScene::create();
         CC_BREAK_IF(! scene);
 
         // Create and Add the MainScene Layer
-        MainScene *layer = MainScene::create();
+		MainScene *layer = MainScene::create();
         CC_BREAK_IF(! layer);
         scene->addChild(layer);
 
@@ -46,7 +46,7 @@ bool MainScene::init()
 		CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile("Images/spritesheet.plist");
 
 		// Get background from sprite sheet
-		background = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("background.png"));
+		background = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("background.png"));
 		this->addChild(background);
 
 		// Center the background on the screen
@@ -72,7 +72,7 @@ bool MainScene::init()
         pCloseItem->setPosition(ccp(CCDirector::sharedDirector()->getWinSize().width - 20, 20));
 
         // Create a menu with the "close" menu item, it's an auto release object.
-        CCMenu* pMenu = CCMenu::menuWithItems(pCloseItem, NULL);
+        CCMenu* pMenu = CCMenu::create(pCloseItem, NULL);
         pMenu->setPosition(CCPointZero);
         CC_BREAK_IF(! pMenu);
 
@@ -122,15 +122,15 @@ void MainScene::initCloud(void)
 	{
 		case 0: 
 			// Get cloud from sprite sheet
-			cloud = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud1.png"));
+			cloud = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud1.png"));
 			break;
 		case 1: 
 			// Get cloud from sprite sheet
-			cloud = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud2.png"));
+			cloud = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud2.png"));
 			break;
 		case 2: 
 			// Get cloud from sprite sheet
-			cloud = CCSprite::spriteWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud3.png"));
+			cloud = CCSprite::createWithSpriteFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName("cloud3.png"));
 			break;
 	}	
 
