@@ -32,37 +32,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	CCSize frameSize = pEGLView->getFrameSize();
 
-    // In this demo, we select resource according to the frame's height.
-    // If the resource size is different from design resolution size, you need to set contentScaleFactor.
-    // We use the ratio of resource's height to the height of design resolution,
-    // this can make sure that the resource's height could fit for the height of design resolution.
+	// ONLY iPhone resources provided
+	CCFileUtils::sharedFileUtils()->setResourceDirectory(smallResource.directory);
+    pDirector->setContentScaleFactor(smallResource.size.height/designResolutionSize.height);
 
-    // if the frame's height is larger than the height of medium resource size, select large resource.
-	if (frameSize.height > mediumResource.size.height)
-	{ 
-		CCFileUtils::sharedFileUtils()->setResourceDirectory(largeResource.directory);
-        pDirector->setContentScaleFactor(largeResource.size.height/designResolutionSize.height);
-	}
-    // if the frame's height is larger than the height of small resource size, select medium resource.
-    else if (frameSize.height > smallResource.size.height)
-    { 
-        CCFileUtils::sharedFileUtils()->setResourceDirectory(mediumResource.directory);
-        pDirector->setContentScaleFactor(mediumResource.size.height/designResolutionSize.height);
-    }
-    // if the frame's height is smaller than the height of medium resource size, select small resource.
-	else
-    { 
-		CCFileUtils::sharedFileUtils()->setResourceDirectory(smallResource.directory);
-        pDirector->setContentScaleFactor(smallResource.size.height/designResolutionSize.height);
-    }
-    // turn on display FPS
+	// turn on display FPS
     pDirector->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
 
-	CCScene *pScene = CCScene::node();
-	pScene->addChild(GameScene::node());
+	CCScene *pScene = CCScene::create();
+	pScene->addChild(GameScene::create());
 
 	pDirector->runWithScene(pScene);
 
