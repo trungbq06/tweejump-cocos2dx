@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-
+#include <vector>
 #include "cocos2d.h"
 #include "SimpleAudioEngine.h"
 
@@ -31,11 +31,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
     pEGLView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, kResolutionNoBorder);
 
 	CCSize frameSize = pEGLView->getFrameSize();
+    vector<string> searchPath;
 
 	// ONLY iPhone resources provided
-	CCFileUtils::sharedFileUtils()->setResourceDirectory(smallResource.directory);
+    searchPath.push_back(smallResource.directory);
+	
+//	CCFileUtils::sharedFileUtils()->setResourceDirectory(smallResource.directory);
     pDirector->setContentScaleFactor(smallResource.size.height/designResolutionSize.height);
 
+    // set searching path
+    CCFileUtils::sharedFileUtils()->setSearchPaths(searchPath);
 	// turn on display FPS
     pDirector->setDisplayStats(true);
 

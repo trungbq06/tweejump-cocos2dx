@@ -49,7 +49,7 @@ bool GameScene::init()
 		}
 
 		// Create the Score Label
-		CCLabelBMFont* scoreLabel = CCLabelBMFont::labelWithString("0",  "Images/bitmapFont.fnt");
+		CCLabelBMFont* scoreLabel = CCLabelBMFont::create("0",  "Images/bitmapFont.fnt");
 		this->addChild(scoreLabel, 5, kScoreLabel);
 
 		// Center the label
@@ -319,9 +319,9 @@ void GameScene::step(float dt)
 			scoreLabel->setString(scoreStr);
 
 			// Highlight the score with some actions to celebrate the bonus win
-			CCActionInterval* a1 = CCScaleTo::actionWithDuration(0.2f, 1.5f, 0.8f);
-			CCActionInterval* a2 = CCScaleTo::actionWithDuration(0.2f, 1.0f, 1.0f);
-			scoreLabel->runAction(CCSequence::actions(a1, a2, a1, a2, a1, a2, NULL));
+			CCActionInterval* a1 = CCScaleTo::create(0.2f, 1.5f, 0.8f);
+			CCActionInterval* a2 = CCScaleTo::create(0.2f, 1.0f, 1.0f);
+			scoreLabel->runAction(CCSequence::create(a1, a2, a1, a2, a1, a2, NULL));
 
 			// Reset the bonus to another platform
 			resetBonus();
@@ -481,7 +481,7 @@ bool GameScene::ccTouchBegan(CCTouch* touch, CCEvent* event)
 // Touch on right side of screen moves player right
 void GameScene::ccTouchEnded(CCTouch* touch, CCEvent* event)
 {
-	CCPoint touchLocation = touch->locationInView(  );	
+	CCPoint touchLocation = touch->getLocationInView(  );	
 	touchLocation = CCDirector::sharedDirector()->convertToGL(touchLocation);
 	touchLocation =  convertToNodeSpace(touchLocation);
 
